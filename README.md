@@ -5,9 +5,9 @@ pyhtmlify is a Python package that allows you to write HTML code with Pure Pytho
 ## 1. Installation
 You can install pyhtml using pip
 ```py
-pip install pyhtml
+pip install pyhtmlify
 ```
-This will install the latest version of pyhtml.
+This will install the latest version of pyhtmlify.
 
 ## 2. How to use
 pyhtmlify is quite easy to use. It is similar to html, but without all of the <> and other things involved. To do so, make a python file starting with html- and pyhtml will pick it up.
