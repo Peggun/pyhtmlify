@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import importlib.util
 import sys
+from bs4 import BeautifulSoup
 
 def read_python_file(file_path):
     try:
@@ -37,7 +38,9 @@ def generate_html_from_code(file_path):
 def write_html_to_file(html_content, output_file):
     try:
         with open(output_file, "w", encoding="utf-8") as file:
-            file.write(html_content)
+            soup = BeautifulSoup(html_content, "html.parser")
+            pretty_html = soup.prettify()
+            file.write(pretty_html)
     except Exception as e:
         print(f"Error writing to file {output_file}: {e}")
 
@@ -53,19 +56,18 @@ def generate_html(output_folder):
         print("No HTML-related Python files found.")
         return
 
-    combined_html = ""
     for file in html_files:
         html_content = generate_html_from_code(file)
+        
         if html_content:
-            combined_html += html_content + "\n"
+            combined_html = html_content  # Reset for each file
 
-        file_name = file.split("\\")[-1].strip().replace(".py", ".html")
+            file_name = file.split("\\")[-1].strip().replace(".py", ".html")
 
-        if combined_html:
             write_html_to_file(combined_html, os.path.join(output_folder, file_name))
             print(f"HTML file '{file_name}' generated successfully in '{output_folder}'.")
         else:
-            print("No valid HTML content generated.")
+            print(f"No valid HTML content generated for file {file}.")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -76,7 +78,7 @@ def main():
     parser.add_argument(
         "--version",
         action="version",
-        version="pyhtmlify 0.1.3",
+        version="pyhtmlify 0.1.4",
         help="Show the version number and exit."
     )
 
