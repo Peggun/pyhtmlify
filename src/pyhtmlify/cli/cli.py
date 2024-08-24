@@ -2,7 +2,7 @@ import argparse
 import os
 from pathlib import Path
 import importlib.util
-
+import sys
 
 def read_python_file(file_path):
     try:
@@ -11,7 +11,6 @@ def read_python_file(file_path):
     except Exception as e:
         print(f"Error reading file {file_path}: {e}")
         return ""
-
 
 def execute_python_file(file_path):
     spec = importlib.util.spec_from_file_location("module.name", file_path)
@@ -22,7 +21,6 @@ def execute_python_file(file_path):
     except Exception as e:
         print(f"Error executing file {file_path}: {e}")
         return None
-
 
 def generate_html_from_code(file_path):
     module = execute_python_file(file_path)
@@ -36,7 +34,6 @@ def generate_html_from_code(file_path):
         print(f"No 'index' function found in the provided file {file_path}.")
         return ""
 
-
 def write_html_to_file(html_content, output_file):
     try:
         with open(output_file, "w", encoding="utf-8") as file:
@@ -44,13 +41,11 @@ def write_html_to_file(html_content, output_file):
     except Exception as e:
         print(f"Error writing to file {output_file}: {e}")
 
-
 def generate_html(output_folder):
     print(f"Generating HTML... Outputs will be saved to {output_folder}/")
 
     os.makedirs(output_folder, exist_ok=True)
 
-    # Find all Python files starting with 'html-' in the current directory and subdirectories
     folder = Path(os.getcwd())
     html_files = [str(file) for file in folder.rglob("html-*.py")]
 
@@ -58,33 +53,31 @@ def generate_html(output_folder):
         print("No HTML-related Python files found.")
         return
 
-    # Combine HTML contents from all files
     combined_html = ""
     for file in html_files:
-
-        combined_html = ""
-
         html_content = generate_html_from_code(file)
         if html_content:
             combined_html += html_content + "\n"
 
         file_name = file.split("\\")[-1].strip().replace(".py", ".html")
 
-        print(os.path.join(output_folder, file_name))
-
         if combined_html:
-            # Write the combined HTML to the output file
             write_html_to_file(combined_html, os.path.join(output_folder, file_name))
-            print(
-                f"HTML file '{file_name}' generated successfully in '{output_folder}'."
-            )
+            print(f"HTML file '{file_name}' generated successfully in '{output_folder}'.")
         else:
             print("No valid HTML content generated.")
-
 
 def main():
     parser = argparse.ArgumentParser(
         description="A simple CLI tool for generating HTML using Python."
+    )
+
+    # Add --version option
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="pyhtmlify 0.1.3",
+        help="Show the version number and exit."
     )
 
     # Define subcommands
@@ -104,6 +97,7 @@ def main():
         help="The folder where the output file will be stored.",
         default="html",
     )
+
     # Parse the arguments
     args = parser.parse_args()
 

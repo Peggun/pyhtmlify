@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="pyhtmlify",  # Your package name
-    version="0.1.0",  # Initial version
+    name="pyhtmlify",
+    version="0.1.4a2",
     long_description=open("README.md").read(),
     description="HTML in Pure Python",
     long_description_content_type='text/markdown',
@@ -44,7 +44,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "pyhtmlify=cli.cli:main",  # Command 'pyhtml' points to 'cli.cli.main'
+            "pyhtmlify=pyhtmlify.cli.cli:main",  # Command 'pyhtmlify'
         ],
     },
 )

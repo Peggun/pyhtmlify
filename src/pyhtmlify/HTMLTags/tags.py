@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from HTMLElement.HTMLElement import htmlElement
+from pyhtmlify.HTMLElement.HTMLElement import htmlElement
 
 
 def html(*children, **attributes):
@@ -154,7 +154,16 @@ def input(**attributes):
 
 
 def textarea(*children, **attributes):
-    return htmlElement("textarea", *children, **attributes)
+    class TextAreaElement(htmlElement):
+        def __init__(self, tag, *children, **attributes):
+            super().__init__(tag, *children, **attributes)
+            self.children = list(self.children)  # Ensure children is a list
+
+        def __call__(self, *children):
+            self.children.extend(children)
+            return self
+
+    return TextAreaElement("textarea", *children, **attributes)
 
 
 def button(*children, **attributes):
