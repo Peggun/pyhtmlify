@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pyhtmlify",
-    version="0.1.4",
+    version="0.1.5",
     long_description=open("README.md").read(),
     description="HTML in Pure Python",
     long_description_content_type='text/markdown',
@@ -41,6 +41,7 @@ setup(
         "setuptools>=64",
         "urllib3==2.2.2",
         "zipp==3.20.0",
+        "beautifulsoup4==4.12.3"
     ],
     entry_points={
         "console_scripts": [
