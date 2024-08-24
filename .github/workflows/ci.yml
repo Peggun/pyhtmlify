@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.12
+        python-version: 3.10
 
     - name: Install dependencies
       run: |
@@ -34,15 +34,41 @@ jobs:
       run: |
         pyhtmlify generate -f generated_html
 
+    - name: List files in generated_html
+      run: |
+        echo "Listing files in generated_html:"
+        find generated_html -type f
+
+    - name: List files in expected_html
+      run: |
+        echo "Listing files in expected_html:"
+        find expected_html -type f
+
     - name: Check HTML output
       run: |
-        # Define expected output HTML files directory
-        mkdir -p expected_html
-        # Compare generated HTML with expected HTML
-        for file in generated_html/*.html; do
+        # Ensure both directories exist
+        if [ ! -d "generated_html" ]; then
+          echo "Directory 'generated_html' does not exist."
+          exit 1
+        fi
+
+        if [ ! -d "expected_html" ]; then
+          echo "Directory 'expected_html' does not exist."
+          exit 1
+        fi
+
+        # Compare each generated file with its expected counterpart
+        for file in $(find generated_html -type f); do
           filename=$(basename "$file")
-          if ! diff "$file" "expected_html/$filename"; then
-            echo "Mismatch found in $filename"
+          expected_file="expected_html/$filename"
+          
+          if [ -f "$expected_file" ]; then
+            if ! diff "$file" "$expected_file"; then
+              echo "Mismatch found in $filename"
+              exit 1
+            fi
+          else
+            echo "Expected file $expected_file does not exist."
             exit 1
           fi
         done
