@@ -3,7 +3,6 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
 class htmlElement:
     def __init__(self, tag, *children, **attributes):
         self.tag = tag
@@ -12,7 +11,7 @@ class htmlElement:
 
     def __str__(self):
         attr_str = " ".join(
-            f'{k.replace("_", "-")}="{v}"' for k, v in self.attributes.items()
+            f'{k.replace("_", "")}="{v}"' for k, v in self.attributes.items()
         )
         children_str = "".join(str(child) for child in self.children)
         if self.tag == "!DOCTYPE html":

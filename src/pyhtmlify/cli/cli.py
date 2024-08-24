@@ -78,7 +78,7 @@ def main():
     parser.add_argument(
         "--version",
         action="version",
-        version="pyhtmlify 0.1.4",
+        version="pyhtmlify 0.1.6",
         help="Show the version number and exit."
     )
 
