@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pyhtmlify",
-    version="0.1.6",
+    version="0.1.7a1",
     long_description=open("README.md").read(),
     description="HTML in Pure Python",
     long_description_content_type='text/markdown',
