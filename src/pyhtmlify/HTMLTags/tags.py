@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.pyhtmlify.HTMLElements.HTMLElements import htmlElement, InputElement, IfElement, TextAreaElement
+from pyhtmlify.HTMLElements.HTMLElements import htmlElement, InputElement, IfElement, TextAreaElement
 
 
 def html(*children, **attributes):
