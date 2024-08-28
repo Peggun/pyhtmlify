@@ -7,6 +7,8 @@
 
 pyhtmlify is a Python package that allows you to write HTML code with Pure Python. This package was mainly made for the [osd Project](https://github.com/Peggun/osd) for simplicity. Heres how to use it. This package isn't completely finished, as we are still adding heaps of stuff and more HTML tags to this project.
 
+Just quickly as well, currently you are unable to use the doctype and html tags as they are bugged and I do not know why. If you would like to add these tags, do so manually in the html file. If you would like to help fix this bug, please feel free too.
+
 ## 1. Installation
 You can install pyhtml using pip
 ```py
@@ -15,9 +17,9 @@ pip install pyhtmlify
 This will install the latest version of pyhtmlify.
 
 ## 2. How to use
-pyhtmlify is quite easy to use. It is similar to html, but without all of the <> and other things involved. To do so, make a python file starting with html- and pyhtml will pick it up.
+pyhtmlify is quite easy to use. It is similar to html, but without all of the <> and other things involved. To do so, make a python file starting with html- and pyhtmlify will pick it up.
 
-For pyhtml to pick up the file to generate the html code for you, you need to have a index function inside of your script. Like this for example:
+For pyhtmlify to pick up the file to generate the html code for you, you need to have a index function inside of your script. Like this for example:
 ```py
 import pyhtmlify.HTMLTags.tags as ph
 
@@ -33,10 +35,14 @@ That is all you need for the script side. Now onto the html conversion
 ## 3. PY to HTML Conversion
 To convert python index functions into html documents, pyhtmlify comes with a pyhtmlify command to use. In the terminal, to generate html code for all the html-*.py files, run 
 ```py
-pyhtmlify generate -f folder
+pyhtmlify generate -f folder -i input_file -n file_name
 ```
 The -f flag specifies the output folder, and there are some other flags and commands that are coming up. 
-However, you you dont use the -f flag, the program automatically defaults to /html. All file names of the html files are the same name as the python script.
+However, you you dont use the -f flag, the program automatically defaults to /html.
+
+The -i flag specifies the file you would like to generate html for. This defaults to the whole directory
+
+The -n flag specifies the output files name. This defaults to the same name as the py file.
 
 There is also a find command
 ```py
