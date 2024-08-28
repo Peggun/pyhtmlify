@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://pepy.tech/project/pyhtmlify"><img alt="Downloads" src="https://static.pepy.tech/badge/pyhtmlify">
-<a style="text-decoration:none" href="https://github.com/Peggun/osd/action/workflows/ci.yml">
+<a style="text-decoration:none" href="https://github.com/Peggun/pyhtmlify/action/workflows/ci.yml">
     <img src="https://img.shields.io/github/actions/workflow/status/Peggun/pyhtmlify/ci.yml?label=pyhtmlify%20CI" alt="pyhtmlify CI" /></a>
 
 pyhtmlify is a Python package that allows you to write HTML code with Pure Python. This package was mainly made for the [osd Project](https://github.com/Peggun/osd) for simplicity. Heres how to use it. This package isn't completely finished, as we are still adding heaps of stuff and more HTML tags to this project.
