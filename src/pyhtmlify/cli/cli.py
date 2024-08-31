@@ -37,28 +37,23 @@ def generate_html_from_code(file_path):
 
 def write_html_to_file(html_content, output_file):
     try:
-        with open(output_file, "w", encoding="utf-8") as file:
+        output_path = Path(output_file)
+        output_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
+        print(f"Attempting to write HTML content to {output_file}...")
+
+        with output_path.open("w", encoding="utf-8") as file:
             soup = BeautifulSoup(html_content, "html.parser")
             pretty_html = soup.prettify()
             file.write(pretty_html)
+            print(f"HTML content successfully written to {output_file}.")
     except Exception as e:
-        if e is FileNotFoundError:
-            raise FileNotFoundError(f"{output_file} wasn't found. Please double check the file path and try again.")
+        print(f"Error writing HTML to file {output_file}: {e}")
 
 def generate_html(input_file, output_folder, output_file_name):
-
-    if output_file_name:
-        if not output_file_name.endswith(".html"):
-            output_file_name = output_file_name + ".html"
-
-    print(f"Generating HTML... Outputs will be saved to {output_folder}/{output_file_name}") if output_file_name != "" else output_file_name == None
-
-    os.makedirs(output_folder, exist_ok=True)
-    folder = Path(os.getcwd())
+    output_folder = Path(output_folder)
 
     if input_file == "all":
-
-        html_files = [str(file) for file in folder.rglob("html-*.py")]
+        html_files = list(Path().rglob("html-*.py"))
 
         if not html_files:
             print("No HTML-related Python files found.")
@@ -66,58 +61,35 @@ def generate_html(input_file, output_folder, output_file_name):
 
         for file in html_files:
             html_content = generate_html_from_code(file)
-            
+
             if html_content:
-                combined_html = html_content  # Reset for each file
-
-                file_name = file.split("\\")[-1].strip().replace(".py", ".html")
-
-                write_html_to_file(combined_html, os.path.join(output_folder, file_name))
+                file_name = file.with_suffix(".html").name
+                write_html_to_file(html_content, output_folder / file_name)
                 print(f"HTML file '{file_name}' generated successfully in '{output_folder}'.")
-
-            elif html_content == None:
-                raise Exception("No html_content found. Please check if you have forgotten a 'return' statement for your index function")
-
             else:
                 print(f"No valid HTML content generated for file {file}.")
-
     else:
         html_content = generate_html_from_code(input_file)
 
         if html_content:
-            combined_html = html_content
-
-            if not output_file_name:
-                file_name = input_file.split("\\")[-1].strip().replace(".py", ".html")
-            else:
-                file_name = output_file_name
-
-            write_html_to_file(combined_html, os.path.join(output_folder, file_name))
+            file_name = output_file_name if output_file_name else Path(input_file).with_suffix(".html").name
+            write_html_to_file(html_content, output_folder / file_name)
             print(f"HTML file '{file_name}' generated successfully in '{output_folder}'.")
-
-        elif html_content == None:
-            raise Exception("No html_content found. Please check if you have forgotten a 'return' statement for your index function")
-
         else:
-            print(f"No valid HTML content generated for file {file}.")
+            print(f"No valid HTML content generated for file {input_file}.")
 
-        
 def find_py_html_files(folder_to_search):
-
     print("Starting Scan for files to be generated...")
 
+    folder_path = Path(folder_to_search)
     results = []
-    num_of_files_found = 0
-    for root, dirs, files in os.walk(folder_to_search):
-        for file in files:
-            file_path = os.path.join(root, file)
-            if os.path.basename(file_path).startswith('html-') and os.path.basename(file_path).endswith('.py'):
-                results.append({
-                    'file': file,
-                    'file_path': file_path
-                })
-                num_of_files_found += 1
+    for file in folder_path.rglob('html-*.py'):
+        results.append({
+            'file': file.name,
+            'file_path': str(file.resolve())
+        })
 
+    num_of_files_found = len(results)
     return results, num_of_files_found
 
 def main():
@@ -125,18 +97,15 @@ def main():
         description="A simple CLI tool for generating HTML using Python."
     )
 
-    # Add --version option
     parser.add_argument(
         "--version",
         action="version",
-        version="pyhtmlify 0.1.7",
+        version="pyhtmlify 0.1.8",
         help="Show the version number and exit."
     )
 
-    # Define subcommands
     subparsers = parser.add_subparsers(dest="command", help="Subcommand to run")
 
-    # Add 'generate' subcommand with a description
     generate_parser = subparsers.add_parser(
         "generate",
         help="Generate HTML content from Python files.",
@@ -144,27 +113,15 @@ def main():
     )
 
     generate_parser.add_argument(
-        "-f",
-        "--folder",
-        type=str,
-        help="The folder where the output file will be stored.",
-        default="html",
+        "-f", "--folder", type=str, help="The folder where the output file will be stored.", default="html"
     )
 
     generate_parser.add_argument(
-        "-i",
-        "--input",
-        type=str,
-        help="The single file you would like to generate html with.",
-        default="all"
+        "-i", "--input", type=str, help="The single file you would like to generate html with.", default="all"
     )
 
     generate_parser.add_argument(
-        "-n",
-        "--name",
-        type=str,
-        help="The name of the file you would like to generate.",
-        default=""
+        "-n", "--name", type=str, help="The name of the file you would like to generate.", default=""
     )
 
     find_parser = subparsers.add_parser(
@@ -174,19 +131,14 @@ def main():
     )
 
     find_parser.add_argument(
-        "-f",
-        "--folder",
-        type=str,
-        help="The folder where the output file will be stored.",
-        default=os.getcwd(),
+        "-f", "--folder", type=str, help="The folder to search for HTML-related Python files.", default=os.getcwd()
     )
 
-    # Parse the arguments
     args = parser.parse_args()
 
     if args.command == "generate":
         generate_html(args.input, args.folder, args.name)
-    if args.command == "find":
+    elif args.command == "find":
         files, num_of_files_found = find_py_html_files(args.folder)
         for file in files:
             print(f"{file['file']} - {file['file_path']}")
